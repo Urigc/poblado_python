@@ -19,8 +19,9 @@ Esta práctica implementa una base de datos relacional para el dominio de **Obra
 ---
 
 ## Estructura del proyecto
+
 practica5/
-├── sql/
+├── sql/ 
 │ ├── ddl/
 │ │ └── 01_crear_tablas.sql
 │ └── dml/
