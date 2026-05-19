@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: nuevadb
+    environment:
+      POSTGRES_DB: Obras_Publicas
+      POSTGRES_USER: urigc
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data   
+      - ./sql/ddl:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+    networks:
+      - practica5_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urigc -d urigc"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: practica5_app
+    environment:
+    
+      DB_HOST: postgres          
+      DB_PORT: 5432              
+      DB_USER: urigc
+      DB_PASSWORD: 123456
+      DB_NAME: Obras_Publicas
+    
+      NIVEL_POBLADO: ${NIVEL_POBLADO:-leve}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - practica5_net
+    command: tail -f /dev/null
+
+networks:
+  practica5_net:
+    driver: bridge
